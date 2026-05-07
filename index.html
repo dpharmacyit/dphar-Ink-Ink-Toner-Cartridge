@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dpharmacy Report – Ink &amp; Toner Cartridge</title>
+<style>
+  :root {
+    --primary: #1a3a6b;
+    --primary-light: #2a5298;
+    --accent: #e74c3c;
+    --accent2: #27ae60;
+    --accent3: #f39c12;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --border: #d0dce8;
+    --text: #1a2d4a;
+    --text-muted: #6b7f99;
+    --shadow: 0 2px 12px rgba(26,58,107,0.10);
+    --shadow-lg: 0 6px 32px rgba(26,58,107,0.16);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white; padding: 18px 28px; display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.22);
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { width: 48px; height: 48px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header .subtitle { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+  .header-right { display: flex; gap: 10px; align-items: center; }
+
+  /* ===== TABS ===== */
+  .tabs { background: white; border-bottom: 2px solid var(--border); display: flex; padding: 0 24px; }
+  .tab { padding: 14px 22px; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .2s; font-size: 13px; }
+  .tab.active { color: var(--primary); border-color: var(--primary); }
+  .tab:hover:not(.active) { color: var(--primary); background: #f0f4f8; }
+
+  /* ===== MAIN LAYOUT ===== */
+  .main { padding: 20px 24px; max-width: 1600px; margin: auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== FILTERS BAR ===== */
+  .filters { background: white; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 130px; }
+  .filter-group label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+  .filter-group select, .filter-group input { border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text); background: var(--bg); outline: none; cursor: pointer; }
+  .filter-group select:focus { border-color: var(--primary); }
+  .btn { padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all .2s; }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-success { background: var(--accent2); color: white; }
+  .btn-success:hover { background: #219a52; }
+  .btn-warning { background: var(--accent3); color: white; }
+  .btn-warning:hover { background: #d68910; }
+  .btn-danger { background: var(--accent); color: white; }
+  .btn-danger:hover { background: #c0392b; }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-outline:hover { background: var(--primary); color: white; }
+
+  /* ===== KPI CARDS ===== */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .kpi-card { background: white; border-radius: 12px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+  .kpi-card.blue::before { background: var(--primary); }
+  .kpi-card.green::before { background: var(--accent2); }
+  .kpi-card.orange::before { background: var(--accent3); }
+  .kpi-card.red::before { background: var(--accent); }
+  .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+  .kpi-value { font-size: 32px; font-weight: 800; margin: 8px 0 4px; color: var(--text); }
+  .kpi-sub { font-size: 12px; color: var(--text-muted); }
+  .kpi-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 36px; opacity: 0.15; }
+
+  /* ===== CHARTS GRID ===== */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .charts-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .chart-card { background: white; border-radius: 12px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .chart-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .chart-title .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .chart-wrap { position: relative; }
+  canvas { max-width: 100%; }
+
+  /* ===== TABLE ===== */
+  .table-card { background: white; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; margin-bottom: 20px; }
+  .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .table-header h3 { font-size: 14px; font-weight: 700; }
+  .table-wrap { overflow-x: auto; max-height: 500px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--primary); color: white; position: sticky; top: 0; z-index: 2; }
+  thead th { padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid #eef2f7; }
+  tbody tr:hover { background: #f5f8ff; }
+  tbody td { padding: 9px 14px; font-size: 13px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-epson { background: #e3f0ff; color: #1a5fad; }
+  .badge-canon { background: #fff0e3; color: #ad5f1a; }
+  .badge-hp107 { background: #e3ffe3; color: #1aad3c; }
+  .badge-hp67 { background: #ffe3f5; color: #ad1a74; }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .font-bold { font-weight: 700; }
+  .text-primary { color: var(--primary); }
+  .text-green { color: var(--accent2); }
+  .text-orange { color: var(--accent3); }
+
+  /* ===== YEAR COMPARISON ===== */
+  .year-compare { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .year-card { background: white; border-radius: 12px; padding: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; }
+  .year-card .y-label { font-size: 18px; font-weight: 800; color: var(--primary); }
+  .year-card .y-cost { font-size: 20px; font-weight: 700; color: var(--text); margin: 6px 0; }
+  .year-card .y-qty { font-size: 13px; color: var(--text-muted); }
+
+  /* ===== PRINT STYLES ===== */
+  @media print {
+    @page { margin: 12mm 15mm; size: A4 portrait; }
+    body > *:not(#print-area) { display: none !important; }
+    body { background: white !important; margin: 0 !important; padding: 0 !important; }
+    #print-area {
+      display: block !important;
+      position: static !important;
+      width: 100% !important;
+      background: white !important;
+      font-family: 'Segoe UI', Tahoma, sans-serif !important;
+      font-size: 12px !important;
+      color: #1a2d4a !important;
+    }
+    #print-area table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 8px; font-size: 11px; }
+    #print-area thead { background: #1a3a6b !important; color: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    #print-area thead th { padding: 6px 8px !important; font-size: 11px !important; font-weight: 600 !important; text-align: left !important; white-space: nowrap; }
+    #print-area tbody tr:nth-child(even) { background: #f5f8ff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    #print-area tbody td { padding: 5px 8px !important; font-size: 11px !important; border-bottom: 1px solid #e0e8f0 !important; }
+    #print-area h2 { font-size: 15px !important; color: #1a3a6b !important; margin-bottom: 4px !important; }
+    #print-area h3 { font-size: 13px !important; color: #1a3a6b !important; margin: 12px 0 6px !important; page-break-after: avoid !important; }
+    #print-area tr { page-break-inside: avoid !important; }
+    #print-area table { page-break-inside: auto; }
+  }
+
+  /* ===== PRINT AREA ===== */
+  #print-area { display: none; } /* ซ่อนใน screen mode, แสดงแค่ตอนพิมพ์ */
+
+  /* ===== MODAL ===== */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
+  .modal-overlay.active { display:flex; }
+  .modal { background:white; border-radius:16px; padding:28px; max-width:540px; width:90%; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .modal h3 { margin-bottom:16px; font-size:16px; color:var(--primary); }
+  .modal-body { margin-bottom:20px; }
+  .modal-footer { display:flex; gap:10px; justify-content:flex-end; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+  .form-group { display:flex; flex-direction:column; gap:4px; }
+  .form-group label { font-size:12px; font-weight:600; color:var(--text-muted); }
+  .form-group select, .form-group input { border:1.5px solid var(--border); border-radius:8px; padding:8px 10px; font-size:13px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width:900px) {
+    .kpi-grid { grid-template-columns: repeat(2,1fr); }
+    .charts-grid, .charts-grid-3 { grid-template-columns:1fr; }
+    .year-compare { grid-template-columns: repeat(2,1fr); }
+  }
+
+  .search-box { border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; width:220px; }
+  .progress-bar-wrap { background:#e8eff8; border-radius:4px; height:8px; overflow:hidden; }
+  .progress-bar { height:100%; border-radius:4px; background:var(--primary); transition:width .4s; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; background:#eef2f7; color:var(--text-muted); margin-right:4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+
+<!-- ========================= UPLOAD LANDING ========================= -->
+<div id="upload-landing" style="
+  position:fixed; inset:0; z-index:9000;
+  background:linear-gradient(135deg,#0d2247 0%,#1a3a6b 60%,#2a5298 100%);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Segoe UI',Tahoma,sans-serif;">
+  <div style="text-align:center;color:white;max-width:480px;padding:40px 32px;">
+
+    <!-- Logo -->
+    <div style="width:80px;height:80px;background:rgba(255,255,255,0.15);border-radius:20px;
+      display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 24px;">🖨️</div>
+
+    <!-- Title -->
+    <div style="font-size:26px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px;">
+      Dpharmacy Report
+    </div>
+    <div style="font-size:14px;font-weight:600;opacity:.85;margin-bottom:32px;letter-spacing:.5px;">
+      Ink &amp; Toner Cartridge Management
+    </div>
+
+    <!-- Upload Box -->
+    <div id="drop-zone" onclick="document.getElementById('landing-file').click()"
+      ondragover="event.preventDefault();this.style.borderColor='#7eb3ff';this.style.background='rgba(255,255,255,0.15)'"
+      ondragleave="this.style.borderColor='rgba(255,255,255,0.35)';this.style.background='rgba(255,255,255,0.08)'"
+      ondrop="handleDrop(event)"
+      style="border:2.5px dashed rgba(255,255,255,0.35);border-radius:16px;
+        padding:36px 28px;cursor:pointer;transition:all .25s;background:rgba(255,255,255,0.08);
+        margin-bottom:20px;">
+      <div style="font-size:36px;margin-bottom:12px;">📂</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">คลิกหรือลากไฟล์มาวางที่นี่</div>
+      <div style="font-size:12px;opacity:.7;">Stock_INK-Printer.xlsx</div>
+    </div>
+
+    <input type="file" id="landing-file" accept=".xlsx,.xls"
+      style="display:none" onchange="loadFromLanding(this)">
+
+    <div id="landing-status" style="font-size:13px;opacity:.75;min-height:20px;"></div>
+
+    <!-- Loading spinner (hidden by default) -->
+    <div id="landing-loading" style="display:none;margin-top:16px;">
+      <div style="width:36px;height:36px;border:3px solid rgba(255,255,255,0.25);
+        border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px;"></div>
+      <div style="font-size:13px;opacity:.8;">กำลังอ่านข้อมูล...</div>
+    </div>
+
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.15);
+      font-size:11px;opacity:.5;">
+      Offline Mode – ข้อมูลทั้งหมดประมวลผลในเครื่องของคุณ
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<div class="header no-print">
+  <div class="header-left">
+    <div class="logo">🖨️</div>
+    <div>
+      <h1>Dpharmacy Report – Ink &amp; Toner Cartridge</h1>
+      <div class="subtitle" id="main-subtitle">กรุณาโหลดไฟล์ Stock_INK-Printer.xlsx เพื่อเริ่มใช้งาน</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-success" onclick="openExportModal()">📥 Export Excel</button>
+    <button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📂 โหลดไฟล์ Excel</button>
+    <input type="file" id="importFile" accept=".xlsx,.xls" style="display:none" onchange="loadAnyExcel(this)">
+    <button class="btn btn-outline" onclick="switchTab('print');setTimeout(()=>{ document.getElementById('pf-type').dispatchEvent(new Event('change')); updatePrintPreview(); },100);" style="color:white;border-color:white;">🖨️ พิมพ์รายงาน</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs no-print">
+  <div class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</div>
+  <div class="tab" onclick="switchTab('branches')">🏪 รายสาขา</div>
+  <div class="tab" onclick="switchTab('monthly')">📅 รายเดือน</div>
+  <div class="tab" onclick="switchTab('comparison')">📈 เปรียบเทียบปี</div>
+  <div class="tab" onclick="switchTab('print')">🖨️ พิมพ์รายงาน</div>
+</div>
+
+<div class="main">
+
+<!-- ========================= PAGE: DASHBOARD ========================= -->
+<div id="page-dashboard" class="page active">
+  <div class="filters no-print">
+    <div class="filter-group">
+      <label>ปี</label>
+      <select id="f-year" onchange="updateAll()">
+        <option value="all">ทุกปี</option>
+        <option value="2569">2569</option>
+        <option value="2568">2568</option>
+        <option value="2567">2567</option>
+        <option value="2566">2566</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>เดือน</label>
+      <select id="f-month" onchange="updateAll()">
+        <option value="all">ทุกเดือน</option>
+        <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+        <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+        <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+        <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+        <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+        <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>สาขา</label>
+      <select id="f-branch" onchange="updateAll()">
+        <option value="all">ทุกสาขา</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>ประเภทหมึก</label>
+      <select id="f-ink" onchange="updateAll()">
+        <option value="all">ทั้งหมด</option>
+        <option value="CE285A">CE285A+CE325 (150฿)</option>
+        <option value="W1107A">W1107A (250฿)</option>
+        <option value="Epson003">Epson 003 (150฿)</option>
+        <option value="HP67">HP67 (410฿)</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="resetFilters()">🔄 รีเซ็ต</button>
+  </div>
+
+
+<!-- ========================= STOCK WIDGET ========================= -->
+<div id="stock-widget" style="margin-bottom:20px;">
+  <div style="background:white;border-radius:12px;padding:18px 22px;box-shadow:var(--shadow);border:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div style="font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;">
+        📦 สต็อกหมึกคงเหลือ
+        <span id="stock-year-label" style="font-size:11px;font-weight:600;color:var(--text-muted);background:#eef2f7;padding:2px 8px;border-radius:20px;">ข้อมูลปัจจุบัน</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);">⚡ Safety Stock = ค่าใช้สูงสุด/เดือน (3 เดือนล่าสุด)</div>
+    </div>
+    <div id="stock-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;"></div>
+  </div>
+</div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">ค่าใช้จ่ายรวม</div>
+      <div class="kpi-value" id="kpi-cost">0</div>
+      <div class="kpi-sub">บาท</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon">📦</div>
+      <div class="kpi-label">จำนวนเบิกรวม</div>
+      <div class="kpi-value" id="kpi-qty">0</div>
+      <div class="kpi-sub">หลอด / กล่อง</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-icon">🏪</div>
+      <div class="kpi-label">สาขาที่เบิก</div>
+      <div class="kpi-value" id="kpi-branches">0</div>
+      <div class="kpi-sub">สาขา</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-label">เฉลี่ยต่อสาขา</div>
+      <div class="kpi-value" id="kpi-avg">0</div>
+      <div class="kpi-sub">บาท / สาขา</div>
+    </div>
+  </div>
+
+  <!-- Price Info Bar -->
+  <div style="background:white;border-radius:10px;padding:12px 20px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+    <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;">ราคาหมึก (อ่านจากไฟล์)</div>
+    <div id="price-info-bar" style="display:flex;gap:16px;flex-wrap:wrap;"></div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot" style="background:#1a3a6b"></span>ค่าใช้จ่ายรายเดือน (แยกปี)</div>
+      <div class="chart-wrap"><canvas id="chart-monthly" height="220"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot" style="background:#e74c3c"></span>สัดส่วนตามประเภทหมึก</div>
+      <div class="chart-wrap"><canvas id="chart-ink-pie" height="220"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="charts-grid-3">
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot" style="background:#27ae60"></span>Top 15 สาขา (ค่าใช้จ่ายสูงสุด)</div>
+      <div class="chart-wrap"><canvas id="chart-branch-top" height="260"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span class="dot" style="background:#f39c12"></span>เปรียบเทียบรายปี</div>
+      <div class="chart-wrap"><canvas id="chart-year-bar" height="260"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE: BRANCHES ========================= -->
+<div id="page-branches" class="page">
+  <div class="filters no-print" style="margin-bottom:16px;">
+    <div class="filter-group">
+      <label>ปี</label>
+      <select id="bf-year" onchange="updateBranchTable()">
+        <option value="all">ทุกปี</option>
+        <option value="2566">2566</option><option value="2567">2567</option>
+        <option value="2568">2568</option><option value="2569">2569</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>เดือน</label>
+      <select id="bf-month" onchange="updateBranchTable()">
+        <option value="all">ทุกเดือน</option>
+        <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+        <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+        <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+        <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+        <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+        <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+      </select>
+    </div>
+    <div class="filter-group" style="flex:1;">
+      <label>ค้นหาสาขา</label>
+      <input type="text" id="bf-search" class="search-box" placeholder="พิมพ์ชื่อสาขา..." oninput="updateBranchTable()">
+    </div>
+    <button class="btn btn-primary" onclick="updateBranchTable()">🔍 ค้นหา</button>
+    <button class="btn btn-success" onclick="exportBranchTable()">📥 Export</button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3 id="branch-table-title">รายละเอียดการเบิกหมึก – ทุกสาขา</h3>
+      <span id="branch-count" style="font-size:13px;color:var(--text-muted);"></span>
+    </div>
+    <div class="table-wrap">
+      <table id="branch-table">
+        <thead>
+          <tr>
+            <th>รหัสสาขา</th>
+            <th>ชื่อสาขา</th>
+            <th>เครื่องพิมพ์</th>
+            <th>ประเภทหมึก</th>
+            <th class="text-right">จำนวน (หลอด)</th>
+            <th class="text-right">ค่าใช้จ่าย (฿)</th>
+            <th style="min-width:120px;">สัดส่วน</th>
+          </tr>
+        </thead>
+        <tbody id="branch-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE: MONTHLY ========================= -->
+<div id="page-monthly" class="page">
+  <div class="filters no-print">
+    <div class="filter-group">
+      <label>ปี</label>
+      <select id="mf-year" onchange="updateMonthlyTable()">
+        <option value="all">ทุกปี</option>
+        <option value="2566">2566</option><option value="2567">2567</option>
+        <option value="2568">2568</option><option value="2569">2569</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>สาขา</label>
+      <select id="mf-branch" onchange="updateMonthlyTable()">
+        <option value="all">ทุกสาขา</option>
+      </select>
+    </div>
+    <button class="btn btn-success no-print" onclick="exportMonthlyTable()">📥 Export</button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>ค่าใช้จ่ายรายเดือน</h3>
+    </div>
+    <div class="table-wrap">
+      <table id="monthly-table">
+        <thead><tr id="monthly-head"></tr></thead>
+        <tbody id="monthly-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE: COMPARISON ========================= -->
+<div id="page-comparison" class="page">
+  <!-- Year summary cards -->
+  <div class="year-compare" id="year-compare-cards"></div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">เปรียบเทียบค่าใช้จ่ายรายเดือน (ทุกปี)</div>
+      <canvas id="chart-compare-line" height="240"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">ค่าใช้จ่ายแยกตามประเภทหมึก (แต่ละปี)</div>
+      <canvas id="chart-compare-ink" height="240"></canvas>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header"><h3>ตารางเปรียบเทียบรายปี × เดือน</h3></div>
+    <div class="table-wrap">
+      <table id="compare-table">
+        <thead><tr id="compare-head"></tr></thead>
+        <tbody id="compare-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= PAGE: PRINT ========================= -->
+<div id="page-print" class="page">
+  <div class="filters no-print">
+    <div class="filter-group">
+      <label>รูปแบบรายงาน</label>
+      <select id="pf-type" onchange="updatePrintPreview()">
+        <option value="year-all">รายจ่ายรวมทั้งปี (ทุกสาขา)</option>
+        <option value="year-branch">รายจ่ายทั้งปี แยกสาขา</option>
+        <option value="month">รายจ่ายรายเดือน</option>
+        <option value="branch-detail">รายละเอียดสาขา</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>ปี</label>
+      <select id="pf-year" onchange="updatePrintPreview()">
+        <option value="all">ทุกปี</option>
+        <option value="2566">2566</option><option value="2567">2567</option>
+        <option value="2568">2568</option><option value="2569">2569</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>เดือน</label>
+      <select id="pf-month" onchange="updatePrintPreview()">
+        <option value="all">ทุกเดือน</option>
+        <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+        <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+        <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+        <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+        <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+        <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>สาขา</label>
+      <select id="pf-branch" onchange="updatePrintPreview()">
+        <option value="all">ทุกสาขา</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="doPrint()">🖨️ พิมพ์</button>
+  </div>
+
+  <div id="print-preview" class="table-card">
+    <div class="table-wrap">
+      <div id="print-content" style="padding:20px;"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="export-modal">
+  <div class="modal">
+    <h3>📥 Export ข้อมูลเป็น Excel</h3>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>ปี</label>
+          <select id="ex-year">
+            <option value="all">ทุกปี</option>
+            <option value="2566">2566</option><option value="2567">2567</option>
+            <option value="2568">2568</option><option value="2569">2569</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>เดือน</label>
+          <select id="ex-month">
+            <option value="all">ทุกเดือน</option>
+            <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+            <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+            <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+            <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+            <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+            <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>สาขา</label>
+        <select id="ex-branch"><option value="all">ทุกสาขา</option></select>
+      </div>
+      <p style="margin-top:12px;color:var(--text-muted);font-size:12px;">ไฟล์ที่ Export สามารถนำกลับมา Import ได้โดยรูปแบบข้อมูลจะยังคงเดิม</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeExportModal()">ยกเลิก</button>
+      <button class="btn btn-success" onclick="doExport()">📥 Export ตอนนี้</button>
+    </div>
+  </div>
+</div>
+
+<!-- SheetJS CDN (offline fallback to built-in CSV) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+let RAW_DATA = [{"year":2566,"month":10,"branch_id":7,"branch_name":"บ้านบึง 1","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2566,"month":11,"branch_id":38,"branch_name":"สำนักงานใหญ่","printer":"Epson L3210","ink_type":"Epson003","qty":3,"cost":450},{"year":2566,"month":11,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2566,"month":11,"branch_id":1,"branch_name":"หน้าโรงพยาบาล ชลบุรี","printer":"Epson L3210","ink_type":"Epson003","qty":3,"cost":450},{"year":2566,"month":11,"branch_id":2,"branch_name":"พัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2566,"month":11,"branch_id":3,"branch_name":"เทพประสิทธิ์","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2566,"month":11,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2566,"month":12,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":3,"cost":450},{"year":2566,"month":9,"branch_id":53,"branch_name":"อมตะ5","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2566,"month":11,"branch_id":54,"branch_name":"ปตท.บางทราย","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2566,"month":9,"branch_id":48,"branch_name":"บางวัว","printer":"Epson L3216","ink_type":"Epson003","qty":1,"cost":150},{"year":2566,"month":11,"branch_id":48,"branch_name":"บางวัว","printer":"Epson L3216","ink_type":"Epson003","qty":3,"cost":450},{"year":2566,"month":9,"branch_id":51,"branch_name":"บ้านบึง3","printer":"Epson L3216","ink_type":"Epson003","qty":1,"cost":150},{"year":2566,"month":11,"branch_id":51,"branch_name":"บ้านบึง3","printer":"Epson L3216","ink_type":"Epson003","qty":1,"cost":150},{"year":2566,"month":9,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2566,"month":11,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2566,"month":10,"branch_id":55,"branch_name":"อมตะ บีเค5","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2566,"month":12,"branch_id":55,"branch_name":"อมตะ บีเค5","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2566,"month":10,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2566,"month":10,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2566,"month":10,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP Deskjet 1115","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":9,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":10,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":11,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":10,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":12,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":9,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":10,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":11,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":12,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":9,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":10,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":11,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":2,"cost":950},{"year":2566,"month":12,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":475},{"year":2566,"month":11,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2566,"month":10,"branch_id":10,"branch_name":"บ้านอำเภอ","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2566,"month":11,"branch_id":14,"branch_name":"นิคม304 ปราจีนบุรี","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":8,"branch_id":22,"branch_name":"พนัสนิคม","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":9,"branch_id":33,"branch_name":"สะพานสี่","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":12,"branch_id":33,"branch_name":"สะพานสี่","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":1,"branch_id":46,"branch_name":"ปตท.ดอนหัวฬ่อ","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":9,"branch_id":21,"branch_name":"พานทอง","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":7,"branch_id":38,"branch_name":"สำนักงานใหญ่","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":8,"branch_id":38,"branch_name":"สำนักงานใหญ่","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":4,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":9,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":5,"branch_id":1,"branch_name":"หน้าโรงพยาบาล ชลบุรี","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":8,"branch_id":1,"branch_name":"หน้าโรงพยาบาล ชลบุรี","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":5,"branch_id":2,"branch_name":"พัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":9,"branch_id":2,"branch_name":"พัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":7,"branch_id":3,"branch_name":"เทพประสิทธิ์","printer":"Epson L3210","ink_type":"Epson003","qty":2,"cost":300},{"year":2567,"month":10,"branch_id":3,"branch_name":"เทพประสิทธิ์","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":10,"branch_id":15,"branch_name":"สัตหีบ กม.1","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":3,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":4,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":11,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":4,"branch_id":38,"branch_name":"MKT","printer":"Epson L6710","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":8,"branch_id":38,"branch_name":"MKT","printer":"Epson L6710","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":3,"branch_id":49,"branch_name":"ปตท.บางคล้า","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":10,"branch_id":53,"branch_name":"อมตะ5","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2567,"month":10,"branch_id":14,"branch_name":"นิคม304 ปราจีนบุรี","printer":"Epson L385","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":9,"branch_id":51,"branch_name":"บ้านบึง3","printer":"Epson L3216","ink_type":"Epson003","qty":3,"cost":450},{"year":2567,"month":12,"branch_id":51,"branch_name":"บ้านบึง3","printer":"Epson L3216","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":1,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":5,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":7,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":12,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":2,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":6,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":9,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":2,"branch_id":43,"branch_name":"ข้างเซ็นทรัลศรีราชา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":4,"branch_id":43,"branch_name":"ข้างเซ็นทรัลศรีราชา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":8,"branch_id":43,"branch_name":"ข้างเซ็นทรัลศรีราชา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":10,"branch_id":43,"branch_name":"ข้างเซ็นทรัลศรีราชา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":3,"branch_id":55,"branch_name":"อมตะ บีเค5","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":7,"branch_id":55,"branch_name":"อมตะ บีเค5","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":1,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":5,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":3,"cost":750},{"year":2567,"month":3,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":6,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":9,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":2,"branch_id":0,"branch_name":"สำนักงานใหญ่(D-Med)","printer":"HP 107A","ink_type":"W1107A","qty":3,"cost":750},{"year":2567,"month":10,"branch_id":0,"branch_name":"สำนักงานใหญ่(D-Med)","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":5,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":6,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":8,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":12,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":9,"branch_id":38,"branch_name":"การเงิน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2567,"month":1,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP Deskjet 1115","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":2,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP Deskjet 1115","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":3,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP Deskjet 1115","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":4,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP Deskjet 1115","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":1,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":3,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":4,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":5,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":7,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":9,"branch_id":32,"branch_name":"นาป่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":1,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":2,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":3,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":4,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":5,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":2,"cost":820},{"year":2567,"month":6,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":7,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":8,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":9,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":1,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":2,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":3,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":4,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":5,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":6,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":2,"cost":820},{"year":2567,"month":7,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":8,"branch_id":40,"branch_name":"ปตท.บ้านเก่า","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":1,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":2,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":3,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":4,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":2,"cost":820},{"year":2567,"month":5,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":7,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":8,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":9,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP Deskjet 1210","ink_type":"HP67","qty":1,"cost":410},{"year":2567,"month":10,"branch_id":32,"branch_name":"นาป่า","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":10,"branch_id":35,"branch_name":"บ้านสวน ซ.9","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":10,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":3,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":7,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":12,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":9,"branch_id":0,"branch_name":"สำนักงานใหญ่ คลัง","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":10,"branch_id":0,"branch_name":"สำนักงานใหญ่ คลัง","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":11,"branch_id":10,"branch_name":"บ้านอำเภอ","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":2,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":8,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":3,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":6,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":9,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":2,"branch_id":14,"branch_name":"นิคม304 ปราจีนบุรี","printer":"HP P1102\nEpson L385","ink_type":"Epson003","qty":1,"cost":150},{"year":2567,"month":6,"branch_id":16,"branch_name":"ถนนพระยาสัจจา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":10,"branch_id":16,"branch_name":"ถนนพระยาสัจจา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":11,"branch_id":16,"branch_name":"ถนนพระยาสัจจา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":4,"branch_id":18,"branch_name":"ฉะเชิงเทรา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2567,"month":2,"branch_id":20,"branch_name":"บ้านบึง2","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":7,"branch_name":"บ้านบึง 1","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":7,"branch_name":"บ้านบึง 1","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":33,"branch_name":"สะพานสี่","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":3,"branch_id":51,"branch_name":"บ้านบึง3","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":51,"branch_name":"บ้านบึง3","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":6,"branch_id":21,"branch_name":"พานทอง","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":10,"branch_id":4,"branch_name":"ถนนสุโขทัย","printer":"Epson L110","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":4,"branch_id":22,"branch_name":"พนัสนิคม","printer":"Epson L3209","ink_type":"Epson003","qty":4,"cost":600},{"year":2568,"month":1,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":2,"cost":300},{"year":2568,"month":4,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2568,"month":5,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":6,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":8,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":11,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":6,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":11,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":1,"branch_name":"หน้าโรงพยาบาล ชลบุรี","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":4,"branch_id":1,"branch_name":"หน้าโรงพยาบาล ชลบุรี","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":12,"branch_id":1,"branch_name":"หน้าโรงพยาบาล ชลบุรี","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":2,"branch_id":2,"branch_name":"พัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":2,"cost":300},{"year":2568,"month":6,"branch_id":2,"branch_name":"พัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":5,"branch_id":3,"branch_name":"เทพประสิทธิ์","printer":"Epson L3210","ink_type":"Epson003","qty":3,"cost":450},{"year":2568,"month":10,"branch_id":15,"branch_name":"สัตหีบ กม.1","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":3,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":2,"cost":300},{"year":2568,"month":7,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":2,"branch_id":38,"branch_name":"MKT-OnLine","printer":"Epson L6710","ink_type":"Epson003","qty":2,"cost":300},{"year":2568,"month":4,"branch_id":38,"branch_name":"MKT-OnLine","printer":"Epson L6710","ink_type":"Epson003","qty":3,"cost":450},{"year":2568,"month":11,"branch_id":38,"branch_name":"MKT-OnLine","printer":"Epson L6710","ink_type":"Epson003","qty":2,"cost":300},{"year":2568,"month":7,"branch_id":53,"branch_name":"อมตะ5","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":11,"branch_id":54,"branch_name":"ปตท.บางทราย","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2568,"month":2,"branch_id":29,"branch_name":"นิคมอมตะ 2","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":14,"branch_name":"นิคม304 ปราจีนบุรี","printer":"Epson L385","ink_type":"Epson003","qty":4,"cost":600},{"year":2568,"month":4,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":7,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":12,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":2,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":4,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":3,"branch_id":55,"branch_name":"บางวัว","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":9,"branch_id":55,"branch_name":"บางวัว","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":1,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":4,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":8,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":1,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":5,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":8,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":11,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":4,"branch_id":0,"branch_name":"สำนักงานใหญ่(DMed-hearing)","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":6,"branch_id":0,"branch_name":"สำนักงานใหญ่(DMed-hearing)","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":7,"branch_id":0,"branch_name":"สำนักงานใหญ่(DMed-hearing)","printer":"HP 107A","ink_type":"W1107A","qty":2,"cost":500},{"year":2568,"month":11,"branch_id":0,"branch_name":"สำนักงานใหญ่(DMed-hearing)","printer":"HP 107A","ink_type":"W1107A","qty":2,"cost":500},{"year":2568,"month":3,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":7,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":9,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2568,"month":3,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":8,"branch_id":41,"branch_name":"หน้า รพ.ปลวกแดง","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":0,"branch_name":"สำนักงานใหญ่ ค้าปลีก","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":2,"branch_id":0,"branch_name":"สำนักงานใหญ่ ค้าปลีก","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":0,"branch_name":"สำนักงานใหญ่ ค้าปลีก","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":11,"branch_id":0,"branch_name":"สำนักงานใหญ่ ค้าปลีก","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":2,"branch_id":40,"branch_name":"ปตท.บ้านเก่่า","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":12,"branch_id":40,"branch_name":"ปตท.บ้านเก่่า","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":2,"branch_id":8,"branch_name":"สัตหีบ กม.10","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":9,"branch_id":8,"branch_name":"สัตหีบ กม.10","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":10,"branch_name":"บ้านอำเภอ","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":5,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":10,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":6,"branch_id":56,"branch_name":"ปตท.บางบ่อ","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":7,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":11,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":6,"branch_id":16,"branch_name":"ถนนพระยาสัจจา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":1,"branch_id":19,"branch_name":"เครือสหพัฒน์ 2","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":11,"branch_id":19,"branch_name":"เครือสหพัฒน์ 2","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":10,"branch_id":20,"branch_name":"เทพประสิทธิ์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":12,"branch_id":20,"branch_name":"เทพประสิทธิ์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":2,"branch_id":21,"branch_name":"บ้านบึง2","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2568,"month":12,"branch_id":21,"branch_name":"บ้านบึง2","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":2,"branch_id":7,"branch_name":"บ้านบึง 1","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":2,"branch_id":30,"branch_name":"หน้าโรงพยาบาลพญาไท","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":21,"branch_name":"พานทอง","printer":"Canon LBP6030","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":22,"branch_name":"พนัสนิคม","printer":"Epson L3209","ink_type":"Epson003","qty":1,"cost":150},{"year":2569,"month":1,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":2,"cost":300},{"year":2569,"month":2,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":38,"branch_name":"สำนักงานใหญ่-ค้าส่ง","printer":"Epson L3210","ink_type":"Epson003","qty":2,"cost":300},{"year":2569,"month":2,"branch_id":34,"branch_name":"หน้าโรงพยาบาล กรุงเทพพัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2569,"month":1,"branch_id":2,"branch_name":"พัทยา","printer":"Epson L3210","ink_type":"Epson003","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":38,"branch_name":"แผนกค้าปลีก","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2569,"month":2,"branch_id":38,"branch_name":"MKT-OnLine","printer":"Epson L6710","ink_type":"Epson003","qty":4,"cost":600},{"year":2569,"month":4,"branch_id":38,"branch_name":"MKT-OnLine","printer":"Epson L6710","ink_type":"Epson003","qty":1,"cost":150},{"year":2569,"month":2,"branch_id":8,"branch_name":"สัตหีบ กม.10","printer":"Epson L3210","ink_type":"Epson003","qty":4,"cost":600},{"year":2569,"month":3,"branch_id":42,"branch_name":"บ่อทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2569,"month":1,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2569,"month":2,"branch_id":26,"branch_name":"อ่างศิลา","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2569,"month":2,"branch_id":47,"branch_name":"ท่าสะอ้าน","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2569,"month":1,"branch_id":37,"branch_name":"ปตท.พานทอง","printer":"HP 107A","ink_type":"W1107A","qty":1,"cost":250},{"year":2569,"month":3,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":6,"branch_name":"เครือสหพัฒน์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":2,"branch_id":0,"branch_name":"สำนักงานใหญ่ ค้าปลีก","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":3,"branch_id":10,"branch_name":"บ้านอำเภอ","printer":"HP P1102","ink_type":"CE285A","qty":2,"cost":300},{"year":2569,"month":2,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":11,"branch_name":"ศรีราชา1","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":12,"branch_name":"บ่อวิน","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":16,"branch_name":"ถนนพระยาสัจจา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":2,"branch_id":18,"branch_name":"ฉะเชิงเทรา","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":2,"branch_id":20,"branch_name":"เทพประสิทธิ์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":4,"branch_id":20,"branch_name":"เทพประสิทธิ์","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150},{"year":2569,"month":3,"branch_id":21,"branch_name":"บ้านบึง2","printer":"HP P1102","ink_type":"CE285A","qty":1,"cost":150}];
+const YEAR_PRICES = {"2566":{"CE285A":150,"W1107A":250,"Epson003":150,"HP67":475},"2567":{"CE285A":150,"W1107A":250,"Epson003":150,"HP67":410},"2568":{"CE285A":150,"W1107A":250,"Epson003":150,"HP67":0},"2569":{"CE285A":150,"W1107A":250,"Epson003":150,"HP67":0}};
+
+
+const MONTHS_TH = ['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const YEARS = [2569,2568,2567,2566];
+
+// Stock remaining จาก sheet สรุป (อัปเดตเมื่อโหลดไฟล์ต้นฉบับ)
+let STOCK_DATA = [
+  { ink_type:'CE285A',  label:'CE285A+CE325',   color:'#3498db', unit:'กล่อง', stock:2  },
+  { ink_type:'W1107A',  label:'W1107A (HP107A)', color:'#27ae60', unit:'กล่อง', stock:5  },
+  { ink_type:'Epson003-ดำ',   label:'Epson 003 ดำ',   color:'#2c3e50', unit:'หลอด', stock:5  },
+  { ink_type:'Epson003-ฟ้า',  label:'Epson 003 ฟ้า',  color:'#2980b9', unit:'หลอด', stock:10 },
+  { ink_type:'Epson003-ชมพู', label:'Epson 003 ชมพู', color:'#e91e8c', unit:'หลอด', stock:6  },
+  { ink_type:'Epson003-เหลือง',label:'Epson 003 เหลือง',color:'#f39c12',unit:'หลอด', stock:6  },
+];
+const INK_COLORS = { CE285A:'#3498db', W1107A:'#27ae60', Epson003:'#e74c3c', HP67:'#f39c12' };
+const INK_LABELS = { CE285A:'CE285A+CE325', W1107A:'W1107A', Epson003:'Epson 003', HP67:'HP67' };
+const YEAR_COLORS = ['#1a3a6b','#27ae60','#e74c3c','#f39c12'];
+
+let charts = {};
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n){ return n.toLocaleString('th-TH'); }
+function branchLabel(id, name){ return `DP${id}-${name}`; }
+function filterData(data, yr, mo, br, ink){
+  return data.filter(r =>
+    (yr==='all' || r.year==yr) &&
+    (mo==='all' || r.month==mo) &&
+    (br==='all' || r.branch_id==br) &&
+    (ink==='all' || r.ink_type==ink)
+  );
+}
+function groupBy(arr, key){ return arr.reduce((acc,r)=>{ const k=r[key]; acc[k]=(acc[k]||[]); acc[k].push(r); return acc; },{}); }
+function sumField(arr, f){ return arr.reduce((s,r)=>s+r[f],0); }
+
+// Get unique branches for selects
+function populateBranchSelects(){
+  const ids = {};
+  RAW_DATA.forEach(r=>{ ids[r.branch_id] = r.branch_name; });
+  const sorted = Object.entries(ids).sort((a,b)=>a[0]-b[0]);
+  ['f-branch','bf-branch','mf-branch','pf-branch','ex-branch'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    sel.innerHTML = '<option value="all">ทุกสาขา</option>';
+    sorted.forEach(([bid,bname])=>{
+      sel.innerHTML += `<option value="${bid}">${branchLabel(bid,bname)}</option>`;
+    });
+  });
+}
+
+
+// ============================================================
+// STOCK WIDGET
+// ============================================================
+function renderStockWidget(){
+  const cards = document.getElementById('stock-cards');
+  if(!cards) return;
+
+  // คำนวณ safety stock จาก RAW_DATA (3 เดือนล่าสุดที่มีข้อมูล)
+  // หา 3 เดือนล่าสุดที่มีการเบิก
+  const allMonths = [...new Set(RAW_DATA.map(r=>`${r.year}-${String(r.month).padStart(2,'0')}`))]
+                    .sort().reverse().slice(0,3);
+
+  const recentData = RAW_DATA.filter(r=>{
+    const key = `${r.year}-${String(r.month).padStart(2,'0')}`;
+    return allMonths.includes(key);
+  });
+
+  // Safety stock per ink_type group = max monthly usage across 3 months
+  const safetyMap = {};
+  ['CE285A','W1107A','Epson003','HP67'].forEach(ink=>{
+    const byMonth = {};
+    recentData.filter(r=>r.ink_type===ink).forEach(r=>{
+      const key=`${r.year}-${r.month}`;
+      byMonth[key]=(byMonth[key]||0)+r.qty;
+    });
+    const vals = Object.values(byMonth);
+    safetyMap[ink] = vals.length ? Math.max(...vals) : 0;
+  });
+
+  // Epson003 แยกสี: ประมาณจาก total / 4 สี
+  ['ดำ','ฟ้า','ชมพู','เหลือง'].forEach(color=>{
+    safetyMap[`Epson003-${color}`] = Math.ceil((safetyMap['Epson003']||0)/4);
+  });
+
+  const latestYear = Math.max(...[...new Set(RAW_DATA.map(r=>r.year))]);
+
+  cards.innerHTML = STOCK_DATA.map(s=>{
+    const ink = s.ink_type.startsWith('Epson003-') ? 'Epson003' : s.ink_type;
+    const safety = safetyMap[s.ink_type] ?? safetyMap[ink] ?? 0;
+    const ratio = safety > 0 ? s.stock / safety : (s.stock > 0 ? 2 : 0);
+    const status = ratio <= 0 ? 'หมด' : ratio < 1 ? 'วิกฤต' : ratio < 1.5 ? 'ต่ำ' : ratio < 2 ? 'ปกติ' : 'เพียงพอ';
+    const statusColor = ratio <= 0 ? '#e74c3c' : ratio < 1 ? '#e74c3c' : ratio < 1.5 ? '#f39c12' : ratio < 2 ? '#3498db' : '#27ae60';
+    const bgColor = ratio <= 0 ? '#fff5f5' : ratio < 1 ? '#fff5f5' : ratio < 1.5 ? '#fffbf0' : '#f8fff8';
+    const pct = Math.min(100, ratio * 50);
+
+    return `<div style="background:${bgColor};border:1.5px solid ${statusColor}33;border-radius:10px;padding:14px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${statusColor};width:${pct}%;transition:width .5s;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text);">${s.label}</div>
+        <span style="font-size:10px;font-weight:700;background:${statusColor};color:white;padding:2px 7px;border-radius:20px;">${status}</span>
+      </div>
+      <div style="font-size:26px;font-weight:800;color:${statusColor};margin:4px 0;">${s.stock}</div>
+      <div style="font-size:11px;color:var(--text-muted);">${s.unit}คงเหลือ</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;padding-top:6px;border-top:1px solid ${statusColor}22;">
+        🛡️ Safety: <b style="color:${statusColor}">${safety}</b> ${s.unit}/เดือน
+        ${s.stock < safety ? `<div style="color:#e74c3c;font-weight:700;font-size:10px;margin-top:2px;">⚠️ ควรสั่งซื้อเพิ่ม ${safety-s.stock} ${s.unit}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('stock-year-label').textContent = `ข้อมูลปี ${latestYear}`;
+}
+
+
+// ============================================================
+// UPLOAD LANDING
+// ============================================================
+function handleDrop(e){
+  e.preventDefault();
+  const dt = e.dataTransfer;
+  const file = dt.files[0];
+  if(!file){ return; }
+  document.getElementById('landing-status').textContent = '';
+  procesLandingFile(file);
+}
+
+function loadFromLanding(input){
+  const file = input.files[0];
+  if(!file) return;
+  procesLandingFile(file);
+  input.value='';
+}
+
+function procesLandingFile(file){
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(!['xlsx','xls'].includes(ext)){
+    document.getElementById('landing-status').textContent = '❌ รองรับเฉพาะไฟล์ .xlsx หรือ .xls';
+    return;
+  }
+  document.getElementById('landing-loading').style.display = 'block';
+  document.getElementById('landing-status').textContent = '';
+  document.getElementById('drop-zone').style.opacity = '0.5';
+
+  if(typeof XLSX === 'undefined'){
+    document.getElementById('landing-loading').style.display = 'none';
+    document.getElementById('landing-status').textContent = '❌ ไม่สามารถโหลด XLSX library – กรุณาเปิดไฟล์แบบ Online';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, {type:'array', cellDates:false, raw:true});
+      const sheetNames = wb.SheetNames;
+
+      const isOriginal = sheetNames.includes('สรุป') && sheetNames.some(s=>s.startsWith('สาขา'));
+      const isExport = (() => {
+        const ws = wb.Sheets[sheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+        return rows.length > 0 && rows[0]['_DPINK_'] === 'v1';
+      })();
+
+      if(!isOriginal && !isExport){
+        document.getElementById('landing-loading').style.display = 'none';
+        document.getElementById('drop-zone').style.opacity = '1';
+        document.getElementById('landing-status').textContent = '❌ ไม่รู้จักรูปแบบไฟล์ – ต้องเป็น Stock_INK-Printer.xlsx หรือไฟล์ Export จากระบบ';
+        return;
+      }
+
+      if(isOriginal) parseOriginalExcel(wb, sheetNames);
+      else parseExportedExcel(wb);
+
+      hideLanding(file.name);
+    } catch(err){
+      document.getElementById('landing-loading').style.display = 'none';
+      document.getElementById('drop-zone').style.opacity = '1';
+      document.getElementById('landing-status').textContent = '❌ เกิดข้อผิดพลาด: ' + err.message;
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function hideLanding(filename){
+  const landing = document.getElementById('upload-landing');
+  landing.style.transition = 'opacity .4s';
+  landing.style.opacity = '0';
+  setTimeout(()=>{
+    landing.style.display = 'none';
+    // อัปเดต subtitle
+    const sub = document.getElementById('main-subtitle');
+    if(sub) sub.textContent = 'โหลดจาก: ' + filename + ' | อัปเดต: ' + new Date().toLocaleDateString('th-TH');
+    // แสดง dashboard
+    document.querySelector('.tabs').style.display = 'flex';
+    document.querySelector('.main').style.display = 'block';
+    populateBranchSelects();
+    updateAll();
+    updateComparison();
+    renderStockWidget();
+    // กลับไปหน้า dashboard
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelector('.tab').classList.add('active');
+    document.getElementById('page-dashboard').classList.add('active');
+  }, 400);
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='branches') updateBranchTable();
+  if(name==='monthly') updateMonthlyTable();
+  if(name==='comparison') updateComparison();
+  if(name==='print') updatePrintPreview();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function updatePriceBar(yr){
+  const yp = YEAR_PRICES[yr] || YEAR_PRICES['2567'];
+  const inkInfo = [
+    {ink:'CE285A', label:'CE285A+CE325', color:'#3498db'},
+    {ink:'W1107A', label:'W1107A', color:'#27ae60'},
+    {ink:'Epson003', label:'Epson 003', color:'#e74c3c'},
+    {ink:'HP67', label:'HP67', color:'#f39c12'},
+  ];
+  const bar = document.getElementById('price-info-bar');
+  if(!bar) return;
+  bar.innerHTML = inkInfo.map(({ink,label,color})=>{
+    const p = yp[ink]||0;
+    return `<div style="display:flex;align-items:center;gap:6px;">
+      <span style="width:10px;height:10px;border-radius:50%;background:${color};display:inline-block;"></span>
+      <span style="font-size:12px;font-weight:600;">${label}</span>
+      <span style="font-size:13px;font-weight:800;color:${p?color:'#ccc'};">${p?p+'฿':'ไม่ใช้'}</span>
+    </div>`;
+  }).join('');
+}
+
+function updateAll(){
+  const yr = document.getElementById('f-year').value;
+  const mo = document.getElementById('f-month').value;
+  const br = document.getElementById('f-branch').value;
+  const ink = document.getElementById('f-ink').value;
+  const data = filterData(RAW_DATA, yr, mo, br, ink);
+
+  const totalCost = sumField(data,'cost');
+  const totalQty = sumField(data,'qty');
+  const branches = new Set(data.map(r=>r.branch_id));
+  const avg = branches.size ? Math.round(totalCost/branches.size) : 0;
+
+  document.getElementById('kpi-cost').textContent = fmt(totalCost);
+  document.getElementById('kpi-qty').textContent = fmt(totalQty);
+  document.getElementById('kpi-branches').textContent = branches.size;
+  document.getElementById('kpi-avg').textContent = fmt(avg);
+  updatePriceBar(yr==='all'?'2567':yr);
+  renderStockWidget();
+
+  drawMonthlyChart(data, yr);
+  drawInkPieChart(data);
+  drawBranchTopChart(data);
+  drawYearBarChart(yr);
+}
+
+function resetFilters(){
+  ['f-year','f-month','f-branch','f-ink'].forEach(id=>{ document.getElementById(id).value='all'; });
+  updateAll();
+}
+
+function drawMonthlyChart(data, yr){
+  const ctx = document.getElementById('chart-monthly').getContext('2d');
+  if(charts.monthly) charts.monthly.destroy();
+
+  let datasets = [];
+  if(yr==='all'){
+    YEARS.forEach((y,i)=>{
+      const yData = data.filter(r=>r.year===y);
+      const vals = Array.from({length:12},(_,m)=>sumField(yData.filter(r=>r.month===m+1),'cost'));
+      datasets.push({ label: `ปี ${y}`, data: vals, borderColor: YEAR_COLORS[i], backgroundColor: YEAR_COLORS[i]+'33', tension:.3, fill:false, pointRadius:4 });
+    });
+  } else {
+    const vals = Array.from({length:12},(_,m)=>sumField(data.filter(r=>r.month===m+1),'cost'));
+    datasets.push({ label:`ปี ${yr}`, data:vals, borderColor:YEAR_COLORS[YEARS.indexOf(parseInt(yr))], backgroundColor:'rgba(26,58,107,0.1)', tension:.3, fill:true, pointRadius:5 });
+  }
+  charts.monthly = new Chart(ctx,{ type:'line', data:{ labels: MONTHS_TH.slice(1), datasets }, options:{ responsive:true, plugins:{legend:{position:'top'}}, scales:{ y:{ beginAtZero:true, ticks:{ callback:v=>fmt(v)+'฿' } } } } });
+}
+
+function drawInkPieChart(data){
+  const ctx = document.getElementById('chart-ink-pie').getContext('2d');
+  if(charts.inkPie) charts.inkPie.destroy();
+  const inks = ['CE285A','W1107A','Epson003','HP67'];
+  const vals = inks.map(ink=>sumField(data.filter(r=>r.ink_type===ink),'cost'));
+  charts.inkPie = new Chart(ctx,{ type:'doughnut', data:{ labels: inks.map(k=>INK_LABELS[k]), datasets:[{ data:vals, backgroundColor: inks.map(k=>INK_COLORS[k]), borderWidth:2 }] }, options:{ responsive:true, plugins:{ legend:{position:'right'}, tooltip:{ callbacks:{ label: ctx=>`${ctx.label}: ${fmt(ctx.parsed)}฿` } } } } });
+}
+
+function drawBranchTopChart(data){
+  const ctx = document.getElementById('chart-branch-top').getContext('2d');
+  if(charts.branchTop) charts.branchTop.destroy();
+  const byBranch = {};
+  data.forEach(r=>{ const k=`DP${r.branch_id}-${r.branch_name}`; byBranch[k]=(byBranch[k]||0)+r.cost; });
+  const sorted = Object.entries(byBranch).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  charts.branchTop = new Chart(ctx,{ type:'bar', data:{ labels: sorted.map(e=>e[0].length>18?e[0].slice(0,18)+'…':e[0]), datasets:[{ label:'ค่าใช้จ่าย (฿)', data:sorted.map(e=>e[1]), backgroundColor:'rgba(26,58,107,0.75)', borderRadius:4 }] }, options:{ responsive:true, indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{ beginAtZero:true, ticks:{callback:v=>fmt(v)} } } } });
+}
+
+function drawYearBarChart(filterYr){
+  const ctx = document.getElementById('chart-year-bar').getContext('2d');
+  if(charts.yearBar) charts.yearBar.destroy();
+  const years = filterYr==='all' ? YEARS : [parseInt(filterYr)];
+  const vals = years.map(y=>sumField(RAW_DATA.filter(r=>r.year===y),'cost'));
+  charts.yearBar = new Chart(ctx,{ type:'bar', data:{ labels: years.map(y=>`ปี ${y}`), datasets:[{ label:'ค่าใช้จ่ายรวม (฿)', data:vals, backgroundColor: YEAR_COLORS.slice(0,years.length), borderRadius:6 }] }, options:{ responsive:true, plugins:{legend:{display:false}}, scales:{ y:{beginAtZero:true, ticks:{callback:v=>fmt(v)}} } } });
+}
+
+// ============================================================
+// BRANCH TABLE
+// ============================================================
+function updateBranchTable(){
+  const yr = document.getElementById('bf-year').value;
+  const mo = document.getElementById('bf-month').value;
+  const search = document.getElementById('bf-search').value.toLowerCase();
+  let data = filterData(RAW_DATA, yr, mo, 'all', 'all');
+
+  const byBranch = {};
+  data.forEach(r=>{
+    const k = `${r.branch_id}|${r.branch_name}|${r.printer}|${r.ink_type}`;
+    if(!byBranch[k]) byBranch[k]={branch_id:r.branch_id,branch_name:r.branch_name,printer:r.printer,ink_type:r.ink_type,qty:0,cost:0};
+    byBranch[k].qty+=r.qty; byBranch[k].cost+=r.cost;
+  });
+
+  let rows = Object.values(byBranch).filter(r=>
+    !search || r.branch_name.toLowerCase().includes(search) || String(r.branch_id).includes(search)
+  ).sort((a,b)=>b.cost-a.cost);
+
+  const maxCost = rows.length ? rows[0].cost : 1;
+  const totalCost = sumField(rows,'cost');
+
+  const badgeClass = {CE285A:'badge-canon',W1107A:'badge-hp107',Epson003:'badge-epson',HP67:'badge-hp67'};
+  document.getElementById('branch-count').textContent = `พบ ${rows.length} รายการ | รวม ${fmt(totalCost)} ฿`;
+
+  document.getElementById('branch-tbody').innerHTML = rows.map(r=>`
+    <tr>
+      <td><span class="tag">DP${r.branch_id}</span></td>
+      <td class="font-bold">${r.branch_name}</td>
+      <td style="color:var(--text-muted)">${r.printer}</td>
+      <td><span class="badge ${badgeClass[r.ink_type]||''}">${INK_LABELS[r.ink_type]||r.ink_type}</span></td>
+      <td class="text-right">${fmt(r.qty)}</td>
+      <td class="text-right font-bold text-primary">${fmt(r.cost)}</td>
+      <td>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" style="width:${Math.round(r.cost/maxCost*100)}%;background:${INK_COLORS[r.ink_type]}"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${Math.round(r.cost/totalCost*100)}%</div>
+      </td>
+    </tr>`).join('');
+}
+
+// ============================================================
+// MONTHLY TABLE
+// ============================================================
+function updateMonthlyTable(){
+  const yr = document.getElementById('mf-year').value;
+  const br = document.getElementById('mf-branch').value;
+  const data = filterData(RAW_DATA, yr, 'all', br, 'all');
+
+  const years = yr==='all' ? YEARS : [parseInt(yr)];
+  const head = document.getElementById('monthly-head');
+  head.innerHTML = `<th>เดือน</th>${years.map(y=>`<th class="text-right">ปี ${y} (฿)</th>`).join('')}<th class="text-right">รวม (฿)</th>`;
+
+  let grandTotal=0, rows='';
+  for(let m=1;m<=12;m++){
+    const mData = data.filter(r=>r.month===m);
+    if(!mData.length) continue;
+    const yVals = years.map(y=>sumField(mData.filter(r=>r.year===y),'cost'));
+    const rowTotal = yVals.reduce((a,b)=>a+b,0);
+    grandTotal+=rowTotal;
+    rows+=`<tr><td>${MONTHS_TH[m]}</td>${yVals.map(v=>`<td class="text-right">${v?fmt(v):'-'}</td>`).join('')}<td class="text-right font-bold">${fmt(rowTotal)}</td></tr>`;
+  }
+  const totals = years.map(y=>sumField(data.filter(r=>r.year===y),'cost'));
+  rows+=`<tr style="background:#f0f4f8;font-weight:700"><td>รวมทั้งหมด</td>${totals.map(v=>`<td class="text-right text-primary">${fmt(v)}</td>`).join('')}<td class="text-right text-primary">${fmt(grandTotal)}</td></tr>`;
+  document.getElementById('monthly-tbody').innerHTML = rows;
+}
+
+// ============================================================
+// COMPARISON
+// ============================================================
+function updateComparison(){
+  // Year cards
+  const cards = YEARS.map((y,i)=>{
+    const yData = RAW_DATA.filter(r=>r.year===y);
+    const cost = sumField(yData,'cost'); const qty = sumField(yData,'qty');
+    return `<div class="year-card"><div class="y-label">ปี ${y}</div><div class="y-cost">${fmt(cost)} ฿</div><div class="y-qty">${qty} หลอด/กล่อง</div></div>`;
+  });
+  document.getElementById('year-compare-cards').innerHTML = cards.join('');
+
+  // Line chart
+  const ctxL = document.getElementById('chart-compare-line').getContext('2d');
+  if(charts.compLine) charts.compLine.destroy();
+  const datasets = YEARS.map((y,i)=>({
+    label:`ปี ${y}`, data:Array.from({length:12},(_,m)=>sumField(RAW_DATA.filter(r=>r.year===y&&r.month===m+1),'cost')),
+    borderColor:YEAR_COLORS[i], tension:.3, fill:false, pointRadius:4
+  }));
+  charts.compLine = new Chart(ctxL,{type:'line',data:{labels:MONTHS_TH.slice(1),datasets},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)+'฿'}}}}});
+
+  // Ink stacked bar
+  const ctxI = document.getElementById('chart-compare-ink').getContext('2d');
+  if(charts.compInk) charts.compInk.destroy();
+  const inks = ['CE285A','W1107A','Epson003','HP67'];
+  const inkDatasets = inks.map(ink=>({
+    label:INK_LABELS[ink], data:YEARS.map(y=>sumField(RAW_DATA.filter(r=>r.year===y&&r.ink_type===ink),'cost')),
+    backgroundColor:INK_COLORS[ink], borderRadius:4
+  }));
+  charts.compInk = new Chart(ctxI,{type:'bar',data:{labels:YEARS.map(y=>`ปี ${y}`),datasets:inkDatasets},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+
+  // Comparison table
+  const head = document.getElementById('compare-head');
+  head.innerHTML = `<th>เดือน</th>${YEARS.map(y=>`<th class="text-right">ปี ${y}</th>`).join('')}<th class="text-right">เฉลี่ย</th>`;
+  let rows='';
+  for(let m=1;m<=12;m++){
+    const yVals = YEARS.map(y=>sumField(RAW_DATA.filter(r=>r.year===y&&r.month===m),'cost'));
+    if(yVals.every(v=>!v)) continue;
+    const avg = Math.round(yVals.reduce((a,b)=>a+b,0)/YEARS.filter((_,i)=>yVals[i]>0).length)||0;
+    rows+=`<tr><td>${MONTHS_TH[m]}</td>${yVals.map(v=>`<td class="text-right">${v?fmt(v):'-'}</td>`).join('')}<td class="text-right text-orange">${fmt(avg)}</td></tr>`;
+  }
+  const totals = YEARS.map(y=>sumField(RAW_DATA.filter(r=>r.year===y),'cost'));
+  const totalAvg = Math.round(totals.reduce((a,b)=>a+b,0)/YEARS.length);
+  rows+=`<tr style="background:#f0f4f8;font-weight:700"><td>รวมปี</td>${totals.map(v=>`<td class="text-right text-primary">${fmt(v)}</td>`).join('')}<td class="text-right text-primary">${fmt(totalAvg)}</td></tr>`;
+  document.getElementById('compare-tbody').innerHTML = rows;
+}
+
+// ============================================================
+// PRINT PAGE
+// ============================================================
+function updatePrintPreview(){
+  const type = document.getElementById('pf-type').value;
+  const yr = document.getElementById('pf-year').value;
+  const mo = document.getElementById('pf-month').value;
+  const br = document.getElementById('pf-branch').value;
+  const data = filterData(RAW_DATA, yr, mo, br, 'all');
+
+  let html = `<div style="margin-bottom:16px;border-bottom:2px solid var(--primary);padding-bottom:12px;">
+    <h2 style="color:var(--primary);font-size:18px;">Dpharmacy – รายงานการเบิกหมึกพิมพ์</h2>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">
+      ปี: ${yr==='all'?'ทุกปี':yr} | เดือน: ${mo==='all'?'ทุกเดือน':MONTHS_TH[mo]} | 
+      สาขา: ${br==='all'?'ทุกสาขา':'DP'+br} | พิมพ์: ${new Date().toLocaleDateString('th-TH')}
+    </div></div>`;
+
+  if(type==='year-all' || type==='year-branch'){
+    const years = yr==='all'?YEARS:[parseInt(yr)];
+    years.forEach(y=>{
+      const yData = data.filter(r=>r.year===y);
+      if(!yData.length) return;
+      html+=`<h3 style="color:var(--primary);margin:16px 0 8px;font-size:15px;">ปี ${y}</h3>`;
+      html+=`<table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead style="background:var(--primary);color:white;">
+          <tr><th style="padding:8px;text-align:left;">สาขา</th><th style="padding:8px;text-align:left;">เครื่องพิมพ์</th><th style="padding:8px;text-align:left;">หมึก</th><th style="padding:8px;text-align:right;">จำนวน</th><th style="padding:8px;text-align:right;">ค่าใช้จ่าย (฿)</th></tr>
+        </thead><tbody>`;
+      const byBranch = {};
+      yData.forEach(r=>{
+        const k=`${r.branch_id}|${r.branch_name}|${r.printer}|${r.ink_type}`;
+        if(!byBranch[k]) byBranch[k]={...r,qty:0,cost:0};
+        byBranch[k].qty+=r.qty; byBranch[k].cost+=r.cost;
+      });
+      const rows = Object.values(byBranch).sort((a,b)=>a.branch_id-b.branch_id);
+      rows.forEach((r,i)=>{
+        html+=`<tr style="background:${i%2?'#f8fafc':'white'};border-bottom:1px solid #e8eff8;">
+          <td style="padding:7px 8px;">DP${r.branch_id}-${r.branch_name}</td>
+          <td style="padding:7px 8px;color:#666;">${r.printer}</td>
+          <td style="padding:7px 8px;">${INK_LABELS[r.ink_type]||r.ink_type}</td>
+          <td style="padding:7px 8px;text-align:right;">${fmt(r.qty)}</td>
+          <td style="padding:7px 8px;text-align:right;font-weight:700;">${fmt(r.cost)}</td>
+        </tr>`;
+      });
+      const total = sumField(rows,'cost');
+      html+=`<tr style="background:#e8f0fe;font-weight:700;"><td colspan="4" style="padding:8px;">รวมปี ${y}</td><td style="padding:8px;text-align:right;color:var(--primary);">${fmt(total)} ฿</td></tr>`;
+      html+=`</tbody></table>`;
+    });
+  } else if(type==='month'){
+    for(let m=1;m<=12;m++){
+      const mData = data.filter(r=>r.month===m);
+      if(!mData.length) continue;
+      html+=`<h3 style="color:var(--primary);margin:16px 0 8px;">${MONTHS_TH[m]}</h3>`;
+      html+=`<table style="width:100%;border-collapse:collapse;font-size:12px;"><thead style="background:var(--primary);color:white;"><tr><th style="padding:8px;text-align:left;">ปี</th><th style="padding:8px;text-align:left;">สาขา</th><th style="padding:8px;text-align:right;">ค่าใช้จ่าย (฿)</th></tr></thead><tbody>`;
+      mData.sort((a,b)=>a.year-b.year||a.branch_id-b.branch_id).forEach((r,i)=>{
+        html+=`<tr style="background:${i%2?'#f8fafc':'white'};border-bottom:1px solid #e8eff8;"><td style="padding:6px 8px;">${r.year}</td><td style="padding:6px 8px;">DP${r.branch_id}-${r.branch_name}</td><td style="padding:6px 8px;text-align:right;font-weight:700;">${fmt(r.cost)}</td></tr>`;
+      });
+      html+=`<tr style="background:#e8f0fe;font-weight:700;"><td colspan="2" style="padding:8px;">รวมเดือน${MONTHS_TH[m]}</td><td style="padding:8px;text-align:right;color:var(--primary);">${fmt(sumField(mData,'cost'))} ฿</td></tr></tbody></table>`;
+    }
+  } else {
+    const byBranch = {};
+    data.forEach(r=>{ const k=r.branch_id; if(!byBranch[k]) byBranch[k]={name:r.branch_name,records:[]}; byBranch[k].records.push(r); });
+    Object.entries(byBranch).forEach(([bid,binfo])=>{
+      html+=`<h3 style="color:var(--primary);margin:16px 0 8px;">DP${bid}-${binfo.name}</h3>`;
+      html+=`<table style="width:100%;border-collapse:collapse;font-size:12px;"><thead style="background:var(--primary);color:white;"><tr><th style="padding:8px;">ปี</th><th style="padding:8px;">เดือน</th><th style="padding:8px;">เครื่องพิมพ์</th><th style="padding:8px;">หมึก</th><th style="padding:8px;text-align:right;">จำนวน</th><th style="padding:8px;text-align:right;">ค่าใช้จ่าย (฿)</th></tr></thead><tbody>`;
+      binfo.records.sort((a,b)=>a.year-b.year||a.month-b.month).forEach((r,i)=>{
+        html+=`<tr style="background:${i%2?'#f8fafc':'white'};border-bottom:1px solid #e8eff8;"><td style="padding:6px 8px;">${r.year}</td><td style="padding:6px 8px;">${MONTHS_TH[r.month]}</td><td style="padding:6px 8px;color:#666;">${r.printer}</td><td style="padding:6px 8px;">${INK_LABELS[r.ink_type]||r.ink_type}</td><td style="padding:6px 8px;text-align:right;">${r.qty}</td><td style="padding:6px 8px;text-align:right;font-weight:700;">${fmt(r.cost)}</td></tr>`;
+      });
+      html+=`<tr style="background:#e8f0fe;font-weight:700;"><td colspan="5" style="padding:8px;">รวม</td><td style="padding:8px;text-align:right;color:var(--primary);">${fmt(sumField(binfo.records,'cost'))} ฿</td></tr></tbody></table>`;
+    });
+  }
+
+  const grand = sumField(data,'cost');
+  html+=`<div style="margin-top:20px;padding:12px 16px;background:var(--primary);color:white;border-radius:8px;font-weight:700;font-size:15px;">รวมค่าใช้จ่ายทั้งสิ้น: ${fmt(grand)} บาท</div>`;
+  document.getElementById('print-content').innerHTML = html;
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+function openExportModal(){
+  document.getElementById('export-modal').classList.add('active');
+}
+function closeExportModal(){
+  document.getElementById('export-modal').classList.remove('active');
+}
+
+function doExport(){
+  const yr = document.getElementById('ex-year').value;
+  const mo = document.getElementById('ex-month').value;
+  const br = document.getElementById('ex-branch').value;
+  const data = filterData(RAW_DATA, yr, mo, br, 'all');
+
+  const rows = data.map(r=>({
+    '_DPINK_': 'v1',
+    'ปี (year)': r.year,
+    'เดือน (month)': r.month,
+    'ชื่อเดือน': MONTHS_TH[r.month],
+    'รหัสสาขา (branch_id)': r.branch_id,
+    'ชื่อสาขา (branch_name)': r.branch_name,
+    'รหัสสาขา (Display)': `DP${r.branch_id}-${r.branch_name}`,
+    'เครื่องพิมพ์ (printer)': r.printer,
+    'ประเภทหมึก (ink_type)': r.ink_type,
+    'ชื่อหมึก': INK_LABELS[r.ink_type]||r.ink_type,
+    'ราคาต่อหน่วย (price)': r.cost / (r.qty||1),
+    'จำนวนเบิก (qty)': r.qty,
+    'ค่าใช้จ่าย (cost)': r.cost,
+  }));
+
+  if(typeof XLSX !== 'undefined'){
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws['!cols'] = [{wch:10},{wch:8},{wch:14},{wch:14},{wch:25},{wch:28},{wch:22},{wch:14},{wch:20},{wch:14},{wch:16}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Ink Report');
+    // Meta sheet for import
+    const meta = [{ _version:'1.0', _source:'DPharmacy Ink Dashboard', _exported: new Date().toISOString() }];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(meta), '_meta');
+    const fname = `DPharmacy_Ink_${yr}_${mo}_${new Date().toISOString().slice(0,10)}.xlsx`;
+    XLSX.writeFile(wb, fname);
+  } else {
+    // Fallback CSV
+    const csv = [Object.keys(rows[0]).join(','), ...rows.map(r=>Object.values(r).join(','))].join('\n');
+    const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='DPharmacy_Ink.csv'; a.click();
+  }
+  closeExportModal();
+}
+
+function exportBranchTable(){
+  const yr = document.getElementById('bf-year').value;
+  const mo = document.getElementById('bf-month').value;
+  const data = filterData(RAW_DATA, yr, mo, 'all', 'all');
+  const byBranch = {};
+  data.forEach(r=>{
+    const k=`${r.branch_id}|${r.branch_name}|${r.printer}|${r.ink_type}`;
+    if(!byBranch[k]) byBranch[k]={branch_id:r.branch_id,branch_name:r.branch_name,printer:r.printer,ink_type:r.ink_type,qty:0,cost:0};
+    byBranch[k].qty+=r.qty; byBranch[k].cost+=r.cost;
+  });
+  const rows = Object.values(byBranch).map(r=>({'รหัสสาขา':r.branch_id,'สาขา':`DP${r.branch_id}-${r.branch_name}`,'เครื่องพิมพ์':r.printer,'หมึก':INK_LABELS[r.ink_type]||r.ink_type,'จำนวน':r.qty,'ค่าใช้จ่าย':r.cost}));
+  if(typeof XLSX !== 'undefined'){
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Branches');
+    XLSX.writeFile(wb, 'DPharmacy_Branches.xlsx');
+  }
+}
+
+function exportMonthlyTable(){
+  const yr = document.getElementById('mf-year').value;
+  const br = document.getElementById('mf-branch').value;
+  const data = filterData(RAW_DATA, yr, 'all', br, 'all');
+  const years = yr==='all'?YEARS:[parseInt(yr)];
+  const rows = [];
+  for(let m=1;m<=12;m++){
+    const row = {เดือน:MONTHS_TH[m]};
+    years.forEach(y=>{ row[`ปี ${y} (฿)`]=sumField(data.filter(r=>r.year===y&&r.month===m),'cost')||0; });
+    rows.push(row);
+  }
+  if(typeof XLSX !== 'undefined'){
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Monthly');
+    XLSX.writeFile(wb, 'DPharmacy_Monthly.xlsx');
+  }
+}
+
+// ============================================================
+// UNIVERSAL EXCEL LOADER
+// รองรับ 2 รูปแบบ:
+//   1. ไฟล์ต้นฉบับ Stock_INK-Printer.xlsx (sheet: สรุป, สาขาYYYY)
+//   2. ไฟล์ที่ Export จากระบบนี้ (_DPINK_ = v1)
+// ============================================================
+function loadAnyExcel(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(typeof XLSX === 'undefined'){ alert('ไม่สามารถโหลด XLSX library ได้ กรุณาเปิดไฟล์ในโหมด Online'); return; }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, {type:'array', cellDates:false, raw:true});
+      const sheetNames = wb.SheetNames;
+
+      // ---- ตรวจว่าเป็นไฟล์ต้นฉบับหรือ export ----
+      const isOriginal = sheetNames.includes('สรุป') && sheetNames.some(s=>s.startsWith('สาขา'));
+      const isExport   = sheetNames.length > 0 && (() => {
+        const ws = wb.Sheets[sheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+        return rows.length > 0 && rows[0]['_DPINK_'] === 'v1';
+      })();
+
+      if(isOriginal){
+        parseOriginalExcel(wb, sheetNames);
+      } else if(isExport){
+        parseExportedExcel(wb);
+      } else {
+        alert('❌ ไม่รู้จักรูปแบบไฟล์นี้\n\nรองรับเฉพาะ:\n• ไฟล์ต้นฉบับ Stock_INK-Printer.xlsx\n• ไฟล์ที่ Export จากระบบนี้');
+      }
+    } catch(err){
+      alert('เกิดข้อผิดพลาด: '+err.message+'\n\nกรุณาตรวจสอบไฟล์แล้วลองใหม่');
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+  input.value = '';
+}
+
+// ---- อ่านไฟล์ที่ Export จากระบบ ----
+function parseExportedExcel(wb){
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const imported = XLSX.utils.sheet_to_json(ws, {defval:''});
+  if(!imported.length){ alert('ไม่พบข้อมูลในไฟล์'); return; }
+
+  const newData = imported.map(r=>{
+    const year     = parseInt(r['ปี (year)'])||0;
+    const month    = parseInt(r['เดือน (month)'])||0;
+    const bid      = parseInt(r['รหัสสาขา (branch_id)']);
+    const ink_type = String(r['ประเภทหมึก (ink_type)']||'');
+    const qty      = parseInt(r['จำนวนเบิก (qty)'])||0;
+    const cost     = parseInt(r['ค่าใช้จ่าย (cost)'])||0;
+    return { year, month, branch_id:bid,
+      branch_name: String(r['ชื่อสาขา (branch_name)']||'').trim(),
+      printer: String(r['เครื่องพิมพ์ (printer)']||'').trim(),
+      ink_type, qty, cost };
+  }).filter(r=>r.year && r.month && !isNaN(r.branch_id) && r.qty>0);
+
+  if(!newData.length){ alert('ไม่สามารถอ่านข้อมูลได้'); return; }
+  const importedYears = [...new Set(newData.map(r=>r.year))];
+  RAW_DATA = RAW_DATA.filter(r=>!importedYears.includes(r.year)).concat(newData);
+  refreshYearOptions(importedYears);
+  populateBranchSelects();
+  updateAll(); updateComparison();
+  alert(`✅ Import สำเร็จ! ${newData.length} รายการ จากปี ${importedYears.join(', ')}`);
+}
+
+// ---- อ่านไฟล์ต้นฉบับ Stock_INK-Printer.xlsx ----
+function parseOriginalExcel(wb, sheetNames){
+  const safeInt = v => { const s=String(v??'').trim(); if(!s||s==='NaN'||s==='undefined') return 0; const n=parseInt(parseFloat(s)); return isNaN(n)?0:n; };
+  const getInk = printer => {
+    const p = String(printer||'').toLowerCase().trim();
+    if(p.includes('ricoh')) return null;
+    if(p.includes('epson l110')||p.includes('epson l3')||p.includes('epson l385')||p.includes('epson l6710')) return 'Epson003';
+    if(p.includes('canon lbp')||p.includes('hp p1102')) return 'CE285A';
+    if(p.includes('hp 107a')) return 'W1107A';
+    if(p.includes('hp deskjet')||p.includes('hp67')) return 'HP67';
+    return null;
+  };
+
+  // 1. อ่านราคาหมึกจาก sheet สรุป แยกตามปี
+  const yearPrices = {}; // { 2567: { CE285A:150, W1107A:250, ... }, ... }
+  const summarySheet = wb.Sheets['สรุป'];
+  if(summarySheet){
+    const raw = XLSX.utils.sheet_to_json(summarySheet, {header:1, defval:''});
+    let currentYear = null;
+    for(let ri=0; ri<raw.length; ri++){
+      const row = raw[ri];
+      // ค้นหาหัว section ของแต่ละปี (col[2] เป็นตัวเลขปี)
+      const yr = parseInt(row[2]);
+      if(yr >= 2566 && yr <= 2580){ currentYear = yr; yearPrices[yr] = {}; }
+      // ค้นหาบรรทัด "ราคา"
+      if(String(row[0]).trim()==='ราคา' && currentYear){
+        // อ่านราคาในบรรทัดถัดไป
+        for(let pi=ri+1; pi<Math.min(ri+10, raw.length); pi++){
+          const pr = raw[pi];
+          const price = parseFloat(String(pr[0]).trim());
+          const name  = String(pr[1]).trim();
+          if(isNaN(price)||price<=0||!name) continue;
+          if(name.includes('CE285A')) yearPrices[currentYear]['CE285A'] = price;
+          else if(name.includes('W1107A')) yearPrices[currentYear]['W1107A'] = price;
+          else if(name.includes('Epson 003')||name.includes('Epson003')) yearPrices[currentYear]['Epson003'] = price;
+          else if(name.includes('HP67')) yearPrices[currentYear]['HP67'] = price;
+        }
+      }
+    }
+  }
+  // 2566 ไม่มี ราคา block → คำนวณ HP67 จาก total÷qty ในภายหลัง (default 475)
+  if(!yearPrices[2566]) yearPrices[2566] = {};
+  if(!yearPrices[2566]['CE285A'])  yearPrices[2566]['CE285A']  = yearPrices[2567]?.['CE285A']  || 150;
+  if(!yearPrices[2566]['W1107A'])  yearPrices[2566]['W1107A']  = yearPrices[2567]?.['W1107A']  || 250;
+  if(!yearPrices[2566]['Epson003'])yearPrices[2566]['Epson003']= yearPrices[2567]?.['Epson003']|| 150;
+  if(!yearPrices[2566]['HP67'])    yearPrices[2566]['HP67']    = 475; // ราคาจริงใน 2566
+
+  const getPrice = (year, ink) => (yearPrices[year]||{})[ink] || 0;
+
+  // 2. อ่านข้อมูลการเบิกจากแต่ละ sheet สาขาYYYY
+  const allRecords = [];
+  sheetNames.filter(s=>s.startsWith('สาขา')).forEach(sheetName=>{
+    const yearStr = sheetName.replace('สาขา','');
+    const year    = parseInt(yearStr);
+    if(isNaN(year)) return;
+
+    const sheetData = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {header:1, defval:''});
+    if(sheetData.length < 3) return;
+
+    const row0 = sheetData[0]; // header row: ชื่อเดือน
+    // ตรวจรูปแบบ: ถ้า col[3] = 'มกราคม' หรือ 'ค่าใช้จ่าย' → กำหนด mode
+    const is2566 = String(row0[3]||'').trim() === 'มกราคม'; // 2566: single-col months
+
+    for(let ri=2; ri<sheetData.length; ri++){
+      const row = sheetData[ri];
+      const bidRaw = row[0]; const bname = String(row[1]||'').trim(); const printer = String(row[2]||'').trim();
+      if(!bidRaw && bidRaw!==0) continue;
+      const bid = safeInt(bidRaw);
+      const ink = getInk(printer);
+      if(ink===null) continue; // skip Ricoh & unknown
+      const price = getPrice(year, ink);
+
+      if(is2566){
+        // col3=ม.ค. ... col11=ก.ย., col12=ต.ค. (single)
+        // col13-16=พ.ย.(ดำฟ้าชมพูเหลือง), col17-20=ธ.ค.
+        const pushRec = (month, qty) => {
+          if(qty>0) allRecords.push({year,month,branch_id:bid,branch_name:bname,printer,ink_type:ink,qty,cost:qty*price});
+        };
+        for(let m=1; m<=10; m++) pushRec(m, safeInt(row[2+m]));             // Jan-Oct: col3-12
+        pushRec(11, [13,14,15,16].reduce((s,c)=>s+safeInt(row[c]),0));       // Nov: cols 13-16
+        pushRec(12, [17,18,19,20].reduce((s,c)=>s+safeInt(row[c]),0));       // Dec: cols 17-20
+      } else {
+        // col3=cost(skip), Jan=col4-7, Feb=col8-11, ... each month = 4 cols
+        for(let m=1; m<=12; m++){
+          const base = 4+(m-1)*4;
+          const qty = [0,1,2,3].reduce((s,i)=>s+safeInt(row[base+i]),0);
+          if(qty>0) allRecords.push({year,month:m,branch_id:bid,branch_name:bname,printer,ink_type:ink,qty,cost:qty*price});
+        }
+      }
+    }
+  });
+
+  if(!allRecords.length){ alert('ไม่พบข้อมูลการเบิกหมึกในไฟล์'); return; }
+
+  const importedYears = [...new Set(allRecords.map(r=>r.year))].sort();
+  // คำนวณยอดรวมตรวจสอบ
+  const totals = {};
+  allRecords.forEach(r=>{ totals[r.year]=(totals[r.year]||0)+r.cost; });
+
+  // อัปเดต RAW_DATA (แทนที่ปีที่อ่านได้)
+  RAW_DATA = RAW_DATA.filter(r=>!importedYears.includes(r.year)).concat(allRecords);
+
+  // อัปเดต YEAR_PRICES ที่ใช้แสดงผล
+  importedYears.forEach(y=>{ if(yearPrices[y]) Object.assign(YEAR_PRICES[y]||={}, yearPrices[y]); });
+
+  refreshYearOptions(importedYears);
+  populateBranchSelects();
+  updateAll(); updateComparison();
+
+  const summary = importedYears.map(y=>`  ปี ${y}: ${(totals[y]||0).toLocaleString()} ฿`).join('\n');
+  // อ่าน stock คงเหลือจาก สรุป sheet (section ปีล่าสุด)
+  if(summarySheet){
+    const raw = XLSX.utils.sheet_to_json(summarySheet, {header:1, defval:''});
+    // หา section ปีล่าสุด (col[2] = year, col[0] = 'จำนวนคงเหลือ' or stock qty)
+    // Latest year section จะอยู่บนสุด (row0)
+    // map ink name → STOCK_DATA index
+    const stockMap = {
+      'CE285A': 0, 'HP P1102': 0, 'Cannon': 0, 'Canon': 0,
+      'HP 107A': 1, 'W1107A': 1,
+      '003 (ดำ)': 2, 'L3210': 2, 'L3209': 2,
+      '003 (ฟ้า)': 3,
+      '003 (ชมพู)': 4,
+      '003 (เหลือง)': 5,
+    };
+    let inSection = false;
+    let latestYearRow = -1;
+    // Find the first year header (latest year)
+    for(let ri=0; ri<Math.min(raw.length,20); ri++){
+      const yr = parseInt(String(raw[ri][2]||''));
+      if(yr >= 2566 && yr <= 2580){ latestYearRow = ri; break; }
+    }
+    if(latestYearRow >= 0){
+      // Read ink rows from latestYearRow+2 until cost row
+      for(let ri=latestYearRow+2; ri<Math.min(latestYearRow+20, raw.length); ri++){
+        const row = raw[ri];
+        const col0 = String(row[0]||'').trim();
+        const col1 = String(row[1]||'').trim();
+        if(col1.includes('ค่าใช้จ่าย')) break; // end of section
+        if(!col1 || col1==='CE285A + CE325' || col1==='W1107A' || col1==='HP67' || col1==='HP CF279A') continue; // skip sub-labels
+        const stockQty = parseInt(col0);
+        if(isNaN(stockQty)) continue;
+        // Match to STOCK_DATA by name keywords
+        for(const [key, idx] of Object.entries(stockMap)){
+          if(col1.includes(key)){
+            STOCK_DATA[idx].stock = stockQty;
+            break;
+          }
+        }
+      }
+    }
+    renderStockWidget();
+  }
+
+  alert(`✅ อ่านไฟล์ต้นฉบับสำเร็จ!\n\nพบข้อมูล ${allRecords.length} รายการ\n${summary}`);
+}
+
+// อัปเดต dropdown ปีให้ครบ
+function refreshYearOptions(years){
+  ['f-year','bf-year','mf-year','pf-year','ex-year'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    const existing = [...sel.options].map(o=>o.value);
+    years.forEach(y=>{
+      if(!existing.includes(String(y))){
+        const opt = document.createElement('option');
+        opt.value = y; opt.textContent = y;
+        sel.appendChild(opt);
+      }
+    });
+    // เรียงตามปี
+    const opts = [...sel.options].filter(o=>o.value!=='all').sort((a,b)=>b.value-a.value); // newest first
+    while(sel.options.length>1) sel.remove(1);
+    opts.forEach(o=>sel.appendChild(o));
+  });
+}
+
+// ============================================================
+// PRINT
+// ============================================================
+function doPrint(){
+  const content = document.getElementById('print-content');
+  if(!content || !content.innerHTML.trim()){
+    alert('ไม่มีข้อมูลสำหรับพิมพ์\nกรุณาเลือกรูปแบบรายงานและเงื่อนไขก่อน');
+    return;
+  }
+  const printArea = document.getElementById('print-area');
+  // สร้าง print header พร้อม logo
+  const now = new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  const header = `<div style="padding:12px 16px 8px;border-bottom:3px solid #1a3a6b;margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:16px;font-weight:800;color:#1a3a6b;">🖨️ Dpharmacy – รายงานการเบิกหมึกพิมพ์</div>
+        <div style="font-size:10px;color:#6b7f99;margin-top:2px;">พิมพ์เมื่อ: ${now}</div>
+      </div>
+    </div>
+  </div>`;
+  printArea.innerHTML = '<div style="padding:8px 16px 16px;">' + header + content.innerHTML + '</div>';
+
+  // ใช้ afterprint event เพื่อ cleanup
+  const cleanup = () => {
+    printArea.innerHTML = '';
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+
+  window.print();
+  // fallback cleanup (กรณี afterprint ไม่ทำงานบางเบราว์เซอร์)
+  setTimeout(cleanup, 30000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function(){
+  // ไม่ render dashboard จนกว่าจะโหลดไฟล์
+  // (ข้อมูล built-in ยังอยู่ใน RAW_DATA สำหรับ fallback)
+  // ซ่อน tabs และ main content จนกว่าจะโหลดไฟล์
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelector('.main').style.display = 'none';
+};
+</script>
+<div id="print-area"></div>
+</body>
+</html>
